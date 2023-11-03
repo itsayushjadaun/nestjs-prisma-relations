@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model product{
+  id Int @default(autoincrement()) @id
+  name String @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  price Float
+  sale Boolean @default(false) 
+  availibility Availibility
+  description  Description?
+  reviews Review[]
+  tag Tag[]
+}
+
+
+
+model Description{
+  id Int @default(autoincrement()) @id
+  content String
+  product product @relation(fields: [productId],references: [id])
+  productId Int @unique
+}
+
+
+
+model Review{
+  id Int @default(autoincrement()) @id
+  title String
+  content String
+  rating Int
+  product product @relation(fields: [productId],references: [id])
+  productId Int @unique
+
+}
+
+
+model Tag{
+  id Int @default(autoincrement()) @id
+  content String
+  products product[]
+}
+
+enum Availibility {
+  IN_STORE
+  ONLINE
+
+}
